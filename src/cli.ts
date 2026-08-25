@@ -8,7 +8,7 @@
  * default (parseable), takes `--json`/`--pretty` explicitly, and exits non-zero
  * on failure so a script can branch on it.
  *
- * No dependencies: an agent should be able to `npx @aicontentdrop/cli` and have
+ * No dependencies: an agent should be able to `npx aicontentdrop` and have
  * it work, not resolve a tree first.
  */
 

@@ -32,9 +32,7 @@
   "commands": {
     "acd": {
       "description": "CLI for the AI Content Drop API",
-      "install": "npm install -g aicontentdrop",
-      "status": "unpublished",
-      "statusNote": "Not yet on npm — the install command will fail until the package is published. Call the REST API at https://aicontentdrop.com/v1 in the meantime."
+      "install": "npm install -g aicontentdrop"
     }
   }
 }
