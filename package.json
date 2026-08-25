@@ -1,0 +1,60 @@
+{
+  "name": "aicontentdrop",
+  "version": "0.1.0",
+  "description": "Official CLI and TypeScript SDK for AI Content Drop — generate AI video and images from the terminal or from code.",
+  "keywords": [
+    "ai-video",
+    "video-generation",
+    "ai",
+    "cli",
+    "sdk",
+    "aicontentdrop",
+    "kling",
+    "veo",
+    "sora",
+    "mcp",
+    "agent"
+  ],
+  "homepage": "https://aicontentdrop.com/developers",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aicontentdrop/aicontentdrop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aicontentdrop/aicontentdrop/issues",
+    "email": "support@aicontentdrop.com"
+  },
+  "license": "MIT",
+  "author": "AI Content Drop <support@aicontentdrop.com> (https://aicontentdrop.com)",
+  "type": "module",
+  "bin": {
+    "acd": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "AGENTS.md",
+    "SKILL.md",
+    "plugin.json",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "@types/node": "^22.9.0"
+  }
+}

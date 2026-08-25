@@ -1,0 +1,40 @@
+{
+  "$schema": "https://agent-plugins.org/schema/v1/plugin.json",
+  "name": "aicontentdrop",
+  "version": "0.1.0",
+  "description": "Generate AI video and images across 35+ models. Browse the catalogue and pricing with no credential; generate with an API key.",
+  "homepage": "https://aicontentdrop.com/developers",
+  "license": "MIT",
+  "author": {
+    "name": "AI Content Drop",
+    "url": "https://aicontentdrop.com",
+    "email": "support@aicontentdrop.com"
+  },
+  "mcpServers": {
+    "aicontentdrop": {
+      "type": "http",
+      "url": "https://aicontentdrop.com/mcp",
+      "description": "Product surface: model catalogue, credit costs, published guides, and video generation with an API key."
+    },
+    "aicontentdrop-docs": {
+      "type": "http",
+      "url": "https://aicontentdrop.com/mcp/docs",
+      "description": "Documentation surface: search and read our published guides. No credential."
+    }
+  },
+  "skills": [
+    {
+      "name": "ai-video-model-picker",
+      "path": "SKILL.md",
+      "description": "Choose the right AI video model for a brief and estimate its credit cost before generating."
+    }
+  ],
+  "commands": {
+    "acd": {
+      "description": "CLI for the AI Content Drop API",
+      "install": "npm install -g aicontentdrop",
+      "status": "unpublished",
+      "statusNote": "Not yet on npm — the install command will fail until the package is published. Call the REST API at https://aicontentdrop.com/v1 in the meantime."
+    }
+  }
+}
