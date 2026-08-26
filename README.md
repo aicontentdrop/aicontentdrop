@@ -90,6 +90,8 @@ Errors throw `AcdError` with `status`, `code`, and `retryAfter` (on 429).
 - Python SDK: [`python/`](./python) — same API surface, zero runtime
   dependencies, on [PyPI](https://pypi.org/project/aicontentdrop/) as
   `aicontentdrop` (`pip install aicontentdrop`)
+- Go SDK: [`go/`](./go) — same API surface, standard library only,
+  `go get github.com/aicontentdrop/aicontentdrop/go`
 - Skills: [`skills/`](./skills) — model selection, prompt writing, batch runs,
   error handling, credits, image generation. Also served per skill at
   `https://aicontentdrop.com/skills/<name>/SKILL.md`, indexed at
