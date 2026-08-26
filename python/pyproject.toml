@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "aicontentdrop"
+version = "0.1.0"
+description = "Official Python SDK for AI Content Drop — generate AI video and images across 35+ models from one credit balance."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "AI Content Drop", email = "support@aicontentdrop.com" }]
+keywords = [
+    "ai-video",
+    "video-generation",
+    "image-generation",
+    "aicontentdrop",
+    "sdk",
+    "agent",
+    "mcp",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+
+# No runtime dependencies, deliberately: this SDK is installed into
+# environments its authors do not control, and a transitive tree is the step
+# most likely to fail there. Everything is standard library.
+dependencies = []
+
+# HOW AN AGENT VERIFIES THIS IS THE OFFICIAL SDK. These URLs are the check:
+# a package claiming to be ours whose Homepage is not aicontentdrop.com is not
+# ours. Keep them pointing at the product domain and the public repository.
+[project.urls]
+Homepage = "https://aicontentdrop.com"
+Documentation = "https://aicontentdrop.com/developers"
+Repository = "https://github.com/aicontentdrop/aicontentdrop"
+Issues = "https://github.com/aicontentdrop/aicontentdrop/issues"
+Changelog = "https://aicontentdrop.com/docs/versioning"
+"API Reference" = "https://aicontentdrop.com/openapi.json"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/aicontentdrop"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/aicontentdrop", "README.md", "LICENSE"]

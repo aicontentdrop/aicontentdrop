@@ -87,6 +87,9 @@ Errors throw `AcdError` with `status`, `code`, and `retryAfter` (on 429).
 - Docs-only MCP: `POST https://aicontentdrop.com/mcp/docs`
 - Agent contract: [`/auth.md`](https://aicontentdrop.com/auth.md)
 - OpenAPI 3.1: [`/openapi.json`](https://aicontentdrop.com/openapi.json)
+- Python SDK: [`python/`](./python) — same API surface, zero runtime
+  dependencies, on [PyPI](https://pypi.org/project/aicontentdrop/) as
+  `aicontentdrop` (`pip install aicontentdrop`)
 - Skills: [`skills/`](./skills) — model selection, prompt writing, batch runs,
   error handling, credits, image generation. Also served per skill at
   `https://aicontentdrop.com/skills/<name>/SKILL.md`, indexed at
