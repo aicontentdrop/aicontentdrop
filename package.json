@@ -42,8 +42,9 @@
     "dist",
     "README.md",
     "AGENTS.md",
-    "SKILL.md",
+    "skills",
     "plugin.json",
+    "mcp.json",
     "LICENSE"
   ],
   "engines": {

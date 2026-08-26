@@ -56,12 +56,23 @@ in the server repo. If you add behaviour that is not a direct endpoint mapping
 
 ## Layout
 
+This package is also a conformant **Agent Plugins v1** package, so the layout
+is defined by the specification rather than by preference: the manifest is
+closed to ten fields, MCP servers live in `mcp.json` and never inline, and
+skills are discovered from `skills/`, never from a manifest array.
+
 ```
-src/index.ts   SDK: AiContentDrop class, AcdError, types
-src/cli.ts     CLI: argument parsing and command dispatch
-plugin.json    Agent Plugins manifest (agent-plugins.org)
-SKILL.md       Importable skill: choosing a model and estimating cost
+src/index.ts            SDK: AiContentDrop class, AcdError, types
+src/cli.ts              CLI: argument parsing and command dispatch
+plugin.json             Agent Plugins manifest (agent-plugins.org, v1.0.0)
+mcp.json                MCP servers: the product surface and the docs surface
+skills/<name>/SKILL.md  Importable skills (agentskills.io)
 ```
+
+Adding a skill means adding one directory under `skills/` with a `SKILL.md`
+whose frontmatter `name` matches the directory. Nothing registers it: discovery
+is by location. Do not add a top-level field to `plugin.json` — the schema is
+closed, and a client must reject or ignore anything outside those ten fields.
 
 ## Contact
 

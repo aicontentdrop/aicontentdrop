@@ -1,8 +1,10 @@
 ---
 name: ai-video-model-picker
-description: Choose the right AI video model for a brief and quote its credit cost before generating, using the AI Content Drop catalogue.
+description: Choose the right AI video model for a brief and quote its credit cost before generating, using the AI Content Drop catalogue. Use when asked to generate a video and you must decide which model, when someone asks what a batch of clips will cost, or when a model id is rejected as unknown.
 license: MIT
-homepage: https://aicontentdrop.com/developers
+metadata:
+  homepage: https://aicontentdrop.com/developers
+  catalogue: https://aicontentdrop.com/v1/models
 ---
 
 # Picking an AI video model (and knowing what it costs)
@@ -12,9 +14,10 @@ model*, or when they ask what a batch will cost before committing.
 
 ## The one rule
 
-Quote before you generate. Model costs differ by more than 9× (roughly 9 credits
-at the cheap end to 84 at the top), so "just use the best one" can turn a
-20-clip storyboard into an expensive surprise. The catalogue is free to read and
+Quote before you generate. Model costs differ by **20×** across the catalogue
+(9 credits for the cheapest video model, 180 for the longest premium one), so
+"just use the best one" can turn a 20-clip storyboard into an expensive
+surprise. The catalogue is free to read and
 needs no credential:
 
 ```bash

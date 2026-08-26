@@ -87,7 +87,12 @@ Errors throw `AcdError` with `status`, `code`, and `retryAfter` (on 429).
 - Docs-only MCP: `POST https://aicontentdrop.com/mcp/docs`
 - Agent contract: [`/auth.md`](https://aicontentdrop.com/auth.md)
 - OpenAPI 3.1: [`/openapi.json`](https://aicontentdrop.com/openapi.json)
-- Skill: [`SKILL.md`](./SKILL.md) — choosing a model and quoting cost
+- Skills: [`skills/`](./skills) — model selection, prompt writing, batch runs,
+  error handling, credits, image generation. Also served per skill at
+  `https://aicontentdrop.com/skills/<name>/SKILL.md`, indexed at
+  [`/skills/index.json`](https://aicontentdrop.com/skills/index.json)
+- Agent plugin: [`plugin.json`](./plugin.json) + [`mcp.json`](./mcp.json)
+  (Agent Plugins v1.0.0)
 - Coding-agent rules for this repo: [`AGENTS.md`](./AGENTS.md)
 
 ## Links

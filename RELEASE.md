@@ -5,10 +5,15 @@ Everything is ready. Nothing has been sent to npm — that needs your account.
 ## The whole thing
 
 ```bash
-cd c:/Users/alexp/AIVideoMaker-web/packages/cli
+cd packages/cli    # from the repo root, ALWAYS with the cd in the same command
 npm login          # opens a browser; 2FA if you have it on
 npm publish
 ```
+
+The `cd` is not decoration. Publishing from the repository root once packed the
+whole application — thousands of files — and only a version collision stopped
+it reaching the registry. The root `package.json` is `"private": true` now, but
+run the `cd` and the publish as one command regardless.
 
 That's it. No `--access public` and no org to create — the package name is
 unscoped, so it publishes public by default. `npm run build` runs automatically
@@ -39,8 +44,8 @@ works from a clean machine, the package is doing its job.
 ## What ships
 
 `files` in `package.json` limits the tarball to `dist/`, `README.md`,
-`AGENTS.md`, `SKILL.md`, `plugin.json`, and `LICENSE` — 10 files, ~11 kB. Source
-is not published. Check without sending anything:
+`AGENTS.md`, `skills/`, `plugin.json`, `mcp.json`, and `LICENSE` — 16 files,
+~21 kB. Source is not published. Check without sending anything:
 
 ```bash
 npm pack --dry-run
