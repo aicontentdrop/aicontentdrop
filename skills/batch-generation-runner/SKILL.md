@@ -5,6 +5,7 @@ license: MIT
 metadata:
   homepage: https://aicontentdrop.com/docs/batch
   rate_limits: https://aicontentdrop.com/docs/rate-limits
+  repository: https://github.com/aicontentdrop/aicontentdrop
 ---
 
 # Running many generations without melting the rate limit
@@ -125,7 +126,7 @@ window rather than shortening it.
 
 Credits are charged only on success, so the arithmetic a user needs is:
 
-- items completed × the model's flat cost = what they actually spent
+- items completed × the price each item was quoted at = what they actually spent
 - items failed or timed out = **zero** credits, nothing to reclaim
 
 State both. A run that produced 17 of 20 clips cost 17 clips' worth, and the

@@ -62,12 +62,25 @@ closed to ten fields, MCP servers live in `mcp.json` and never inline, and
 skills are discovered from `skills/`, never from a manifest array.
 
 ```
-src/index.ts            SDK: AiContentDrop class, AcdError, types
-src/cli.ts              CLI: argument parsing and command dispatch
-plugin.json             Agent Plugins manifest (agent-plugins.org, v1.0.0)
-mcp.json                MCP servers: the product surface and the docs surface
-skills/<name>/SKILL.md  Importable skills (agentskills.io)
+src/index.ts                 SDK: AiContentDrop class, AcdError, types
+src/cli.ts                   CLI: argument parsing and command dispatch
+plugin.json                  Agent Plugins manifest (agent-plugins.org, v1.0.0)
+mcp.json                     MCP servers: the product surface and the docs surface
+skills/<name>/SKILL.md       Importable skills (agentskills.io)
+.codex-plugin/plugin.json    ChatGPT / Codex plugin directory manifest
 ```
+
+The package is packaged TWICE on purpose. Agent Plugins v1 and the
+ChatGPT/Codex plugin directory use different schemas at different paths, so one
+file cannot serve both. Both point at the same `skills/` directory, and a test
+pins that they agree on name, version, description, licence, homepage and
+repository — two manifests describing one package drift, and a manifest that
+contradicts its sibling is worse than a missing one.
+
+`.codex-plugin/plugin.json` deliberately declares NO `apps` or `mcpServers`. A
+remote MCP server is referenced there through an OpenAI-issued app id
+(`plugin_asdk_app…`), which we do not have; inventing the field would fail
+review rather than pass it. Skills are the portable half and ship now.
 
 Adding a skill means adding one directory under `skills/` with a `SKILL.md`
 whose frontmatter `name` matches the directory. Nothing registers it: discovery

@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "aicontentdrop",
-  "version": "0.1.0",
-  "description": "Generate AI video and images across 35+ models. Browse the catalogue and pricing with no credential; generate with an API key.",
+  "version": "0.2.0",
+  "description": "Make AI videos, images, finished ads and short dramas from a description, across multiple leading models. Browse the catalogue and cost estimates with no credential; generate with an API key or an OAuth sign-in.",
   "author": {
     "name": "AI Content Drop",
     "url": "https://aicontentdrop.com",

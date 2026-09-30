@@ -13,6 +13,7 @@
  */
 
 import { AiContentDrop, AcdError } from "./index.js";
+import { pathToFileURL } from 'node:url';
 
 const HELP = `acd — AI Content Drop CLI
 
@@ -28,7 +29,14 @@ COMMANDS
   status <video_id>                               Poll one generation
   list [--limit N] [--cursor C] [--all]           Recent generations
   register [--name NAME]                          Self-register an agent token (no key needed)
+  billing catalog                                List authoritative billing SKUs and catalog version
+  billing status [checkout_id]                    Owned subscription or checkout state
+  billing history [--limit N] [--cursor C]         Owned payment history
+  billing portal --idempotency-key KEY            Return an owned billing portal link
+  checkout plan|topup --sku ID --catalog-version V --idempotency-key KEY --confirm-purchase
+                                                  Create a hosted link for a human to complete
   open-api                                        Print the OpenAPI spec URL and key facts
+  help                                            This message
 
 OPTIONS
   --key <acd_live_…>   API key. Defaults to $ACD_API_KEY.
@@ -61,6 +69,10 @@ function parseArgs(argv: string[]): Args {
       continue;
     }
     const name = token === "-h" ? "help" : token.slice(2);
+    if (['help', 'pretty', 'json', 'sandbox', 'wait', 'all', 'confirm-purchase'].includes(name)) {
+      out.flags[name] = true;
+      continue;
+    }
     const next = argv[i + 1];
     if (next !== undefined && !next.startsWith("--")) {
       out.flags[name] = next;
@@ -94,13 +106,23 @@ function formatRow(row: unknown): string {
   return String(row);
 }
 
-async function main(): Promise<number> {
-  const args = parseArgs(process.argv.slice(2));
+export async function main(argv: string[] = process.argv.slice(2)): Promise<number> {
+  const args = parseArgs(argv);
   const command = args._[0];
 
-  if (!command || args.flags.help) {
+  // Asking for help is not a failure. `npx aicontentdrop --help` used to print
+  // usage and exit 1, because the exit code was decided by "is there a
+  // command" alone; a VM harness that gates a tool on `--help` exiting 0 read
+  // that as a broken CLI. Help requested → stdout, 0. No command at all → the
+  // same usage on STDERR, 1, so a script can still branch on it.
+  if (args.flags.help || command === "help") {
     console.log(HELP);
-    return command ? 0 : 1;
+    return 0;
+  }
+
+  if (!command) {
+    console.error(HELP);
+    return 1;
   }
 
   const pretty = Boolean(args.flags.pretty);
@@ -111,6 +133,43 @@ async function main(): Promise<number> {
   });
 
   switch (command) {
+    case 'checkout': {
+      if (args.flags['confirm-purchase'] !== true) {
+        throw new AcdError(400, { error: { code: 'confirmation_required', message:
+          'Checkout requires an explicit --confirm-purchase. The returned hosted link must be completed by a human.' } });
+      }
+      const kind = args._[1] === 'plan' ? 'subscription' : args._[1] === 'topup' ? 'topup' : null;
+      const skuId = args.flags.sku;
+      const catalogVersion = args.flags['catalog-version'];
+      const idempotencyKey = args.flags['idempotency-key'];
+      if (!kind || args._.length !== 2 || typeof skuId !== 'string' || !skuId.startsWith(kind + ':') ||
+          typeof catalogVersion !== 'string' || typeof idempotencyKey !== 'string') {
+        throw new AcdError(400, { error: { code: 'invalid_request', message:
+          'Use checkout plan|topup --sku ID --catalog-version V --idempotency-key KEY --confirm-purchase. Read billing catalog first; reuse the same key when retrying one purchase.' } });
+      }
+      print(await client.createBillingCheckout({ kind, skuId, catalogVersion, idempotencyKey,
+        returnTarget: 'billing' } as Parameters<AiContentDrop['createBillingCheckout']>[0]), pretty);
+      return 0;
+    }
+    case 'billing': {
+      switch (args._[1]) {
+        case 'catalog': print(await client.billingCatalog(), pretty); return 0;
+        case 'status': print(args._[2] ? await client.billingCheckout(args._[2]) : await client.billingStatus(), pretty); return 0;
+        case 'history':
+          print(await client.billingHistory({ limit: args.flags.limit ? Number(args.flags.limit) : undefined,
+            cursor: typeof args.flags.cursor === 'string' ? args.flags.cursor : undefined }), pretty);
+          return 0;
+        case 'portal': {
+          const idempotencyKey = args.flags['idempotency-key'];
+          if (typeof idempotencyKey !== 'string') {
+            throw new AcdError(400, { error: { code: 'invalid_request', message: 'Use billing portal --idempotency-key KEY.' } });
+          }
+          print(await client.createBillingPortal({ idempotencyKey, returnTarget: 'billing' }), pretty);
+          return 0;
+        }
+        default: throw new AcdError(400, { error: { code: 'invalid_request', message: 'Use billing catalog|status|history|portal.' } });
+      }
+    }
     case "models": {
       const type = args.flags.type === "image" ? "image" : "video";
       const maxCredits = args.flags["max-credits"];
@@ -234,7 +293,7 @@ async function main(): Promise<number> {
 // while the fetch socket is still closing, which trips a libuv assertion on
 // Windows and prints a crash after a successful command. Letting the process
 // end naturally gives the same exit status without the noise.
-main()
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main()
   .then((code) => {
     process.exitCode = code;
   })

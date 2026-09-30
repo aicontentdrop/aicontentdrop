@@ -52,6 +52,55 @@ export interface Model {
   credits: number;
 }
 
+/** Wire contract: shared/billing-contract.ts. No provider IDs or arbitrary redirects. */
+export type BillingCheckoutInput = {
+  catalogVersion: string;
+  idempotencyKey: string;
+  returnTarget: 'billing' | 'generate' | 'quiz';
+} & (
+  | { kind: 'subscription'; skuId: `subscription:${string}:s${0 | 1 | 2}:${'monthly' | 'annual'}`; offerId?: string }
+  | { kind: 'topup'; skuId: `topup:${string}` }
+  | { kind: 'quiz'; skuId: `quiz:${string}` }
+);
+
+export type BillingCheckoutStatus = 'pending' | 'processing' | 'paid_pending_review' | 'fulfilled' | 'failed' | 'expired' | 'refunded';
+export interface BillingCheckout {
+  checkoutId: string;
+  url: string | null;
+  status: BillingCheckoutStatus;
+  statusUrl: string;
+  expiresAt: string | null;
+  amountMinor: number;
+  currency: string;
+  renewalTerms?: unknown;
+}
+export interface BillingCatalog {
+  version: string;
+  currency: string;
+  enabled: boolean;
+  reason: string | null;
+  items: Array<{
+    skuId: string;
+    kind: 'subscription' | 'topup' | 'quiz';
+    name: string;
+    amountMinor: number;
+    currency: string;
+    credits: number;
+    availability: { enabled: boolean; reason: string | null };
+    [key: string]: unknown;
+  }>;
+}
+export interface BillingHistory {
+  history: Array<{
+    id: string; amount: number; currency: string; status: string;
+    productName: string; createdAt: string; invoiceUrl: string | null; provider?: string;
+  }>;
+  degraded?: boolean;
+  nextCursor?: string | null;
+  environment?: 'test' | 'live';
+  legacyHistoryComplete?: boolean;
+}
+
 export interface Video {
   id: string;
   status: "generating" | "completed" | "failed" | "timeout" | string;
@@ -124,6 +173,55 @@ export class AiContentDrop {
   /** Account and credit balance. Requires an API key. */
   me() {
     return this.request<Record<string, unknown>>("GET", "/v1/me");
+  }
+
+  /** Server-authoritative SKUs and current accepted catalog version. No key required. */
+  billingCatalog() {
+    return this.request<BillingCatalog>('GET', '/v1/billing/catalog');
+  }
+
+  /** Create a hosted human handoff. Requires an explicitly granted billing:checkout scope. */
+  createBillingCheckout(input: BillingCheckoutInput) {
+    this.assertBillingHandoffAllowed();
+    return this.request<BillingCheckout>('POST', '/v1/billing/checkouts', {
+      body: input,
+      idempotencyKey: input.idempotencyKey,
+    });
+  }
+
+  /** Owned checkout state; the return URL does not prove payment or grant credits. */
+  billingCheckout(checkoutId: string) {
+    return this.request<Omit<BillingCheckout, 'url'>>('GET', `/v1/billing/checkouts/${encodeURIComponent(checkoutId)}`);
+  }
+
+  billingStatus() {
+    return this.request<{ subscription: Record<string, unknown> | null; subscriptions: Record<string, unknown>[];
+      reconciliationRequired: boolean; environment: 'test' | 'live'; entitlementsAvailable: boolean;
+      legacyHistoryComplete: boolean }>('GET', '/v1/billing/subscription');
+  }
+
+  billingHistory(options: { limit?: number; cursor?: string } = {}) {
+    const params = new URLSearchParams();
+    if (options.limit !== undefined) params.set('limit', String(options.limit));
+    if (options.cursor !== undefined) params.set('cursor', options.cursor);
+    const query = params.toString();
+    return this.request<BillingHistory>('GET', `/v1/billing/history${query ? `?${query}` : ''}`);
+  }
+
+  /** Return an owned portal URL; never opens a browser or completes an action. */
+  createBillingPortal(input: { idempotencyKey: string; returnTarget: 'billing' | 'generate' }) {
+    this.assertBillingHandoffAllowed();
+    return this.request<{ url: string; expiresAt?: string }>('POST', '/v1/billing/portal-sessions', {
+      body: input,
+      idempotencyKey: input.idempotencyKey,
+    });
+  }
+
+  private assertBillingHandoffAllowed() {
+    if (this.sandbox) {
+      throw new AcdError(400, { error: { code: 'billing_sandbox_required', message:
+        'The generation sandbox flag does not simulate billing. Use a billing sandbox deployment and its API key.' } });
+    }
   }
 
   /** Model catalogue with flat credit costs. No key required. */

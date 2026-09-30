@@ -1,6 +1,6 @@
 {
   "name": "aicontentdrop",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Official CLI and TypeScript SDK for AI Content Drop — generate AI video and images from the terminal or from code.",
   "keywords": [
     "ai-video",
@@ -13,7 +13,10 @@
     "veo",
     "sora",
     "mcp",
-    "agent"
+    "agent",
+    "agent-skills",
+    "openapi",
+    "typescript"
   ],
   "homepage": "https://aicontentdrop.com/developers",
   "repository": {
@@ -45,6 +48,7 @@
     "skills",
     "plugin.json",
     "mcp.json",
+    ".codex-plugin",
     "LICENSE"
   ],
   "engines": {

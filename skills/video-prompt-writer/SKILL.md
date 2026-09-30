@@ -5,6 +5,7 @@ license: MIT
 metadata:
   homepage: https://aicontentdrop.com/docs/api
   catalogue: https://aicontentdrop.com/v1/models
+  repository: https://github.com/aicontentdrop/aicontentdrop
 ---
 
 # Writing a video prompt that survives the model
@@ -78,8 +79,8 @@ wander, faces soften, backgrounds reinvent themselves. Two consequences:
 
 ## Iterating without burning the budget
 
-Credits are flat per generation and charged only on success, so a failed run
-costs nothing but a rejected-looking one costs full price. The cheap path:
+Credits are charged only on success, so a failed run costs nothing but a
+rejected-looking one costs full price. The cheap path:
 
 1. Rehearse the request shape in the sandbox — no key, no credits:
    ```bash

@@ -1,16 +1,18 @@
 ---
 name: image-generation
-description: Generate images through the AI Content Drop API and choose between the 27 image models by cost and job. Covers POST /v1/generate/image, picking a model for drafts versus finals, the sandbox rehearsal, and using a generated image as the first frame of a video. Use when asked for an image, a thumbnail, a product still, a poster, concept art, or a reference frame to animate.
+description: Generate images through the AI Content Drop API and choose between multiple leading image models by cost and job. Covers POST /v1/generate/image, picking a model for drafts versus finals, the sandbox rehearsal, and using a generated image as the first frame of a video. Use when asked for an image, a thumbnail, a product still, a poster, concept art, or a reference frame to animate.
 license: MIT
 metadata:
   homepage: https://aicontentdrop.com/docs/api
   catalogue: https://aicontentdrop.com/v1/models?type=image
+  repository: https://github.com/aicontentdrop/aicontentdrop
 ---
 
 # Generating images, and not overpaying for drafts
 
-There are 27 image models on one credit balance, and the cheapest costs a single
-credit while the dearest costs roughly ten times that. Since credits are flat
+Multiple leading image models share one credit balance, and the cheapest costs a
+single credit while the dearest costs roughly ten times that. The catalogue
+reports the live count. Since credits are flat
 per generation, the difference between a careless workflow and a careful one is
 about an order of magnitude on the same output.
 
@@ -23,7 +25,7 @@ curl -s "https://aicontentdrop.com/v1/models?type=image"
 ```json
 {
   "type": "image",
-  "count": 27,
+  "count": 4,
   "models": [
     { "id": "z_image",       "name": "Z Image",       "credits": 1 },
     { "id": "flux_2",        "name": "Flux 2",        "credits": 3 },
@@ -33,8 +35,8 @@ curl -s "https://aicontentdrop.com/v1/models?type=image"
 }
 ```
 
-Ids and prices change as models are added, so read them rather than hard-coding
-the list above. To see only what fits a budget:
+The sample above is trimmed to four entries. Ids, prices and the count change as
+models are added, so read them rather than hard-coding the list. To see only what fits a budget:
 
 ```bash
 curl -s "https://aicontentdrop.com/v1/models?type=image&max_credits=4"

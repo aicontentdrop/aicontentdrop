@@ -5,6 +5,7 @@ license: MIT
 metadata:
   homepage: https://aicontentdrop.com/developers
   catalogue: https://aicontentdrop.com/v1/models
+  repository: https://github.com/aicontentdrop/aicontentdrop
 ---
 
 # Picking an AI video model (and knowing what it costs)
@@ -84,10 +85,15 @@ and let them choose.
 
 ## Facts you can rely on
 
-- Credits are flat per generation, not per second.
+- Most video models cost one flat price per generation. A few (the Seedance
+  family among them) price by the second of output and by resolution, so a
+  longer or sharper take costs more than the catalogue row. For those, quote
+  with the exact duration and resolution through the MCP tool
+  `estimate_credit_cost`, which returns `basis: "per_second"`.
 - Credits are charged **only on success**. Safety blocks, provider failures, and
   timeouts cost nothing, so a failed generation never needs a refund request.
-- Free tier is 10 credits, no card. Paid plans start at $19/month.
+- What a plan includes is described at <https://aicontentdrop.com/plans>; a
+  refusal says when a free account cannot generate.
 - Model IDs use underscores (`kling_3_0`, `veo_3_fast`); dashes are accepted and
   normalised.
 - Generation is submit-and-poll: you get a `202` with a poll URL, not a finished

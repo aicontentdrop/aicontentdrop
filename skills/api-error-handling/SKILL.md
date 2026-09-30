@@ -5,6 +5,7 @@ license: MIT
 metadata:
   homepage: https://aicontentdrop.com/docs/errors
   rate_limits: https://aicontentdrop.com/docs/rate-limits
+  repository: https://github.com/aicontentdrop/aicontentdrop
 ---
 
 # Failing well against the AI Content Drop API
@@ -111,8 +112,8 @@ than a patient one.
 ## The rule that makes failure cheap here
 
 Credits are charged **only when a generation succeeds**. A safety block, a
-provider failure, a validation error and a timeout all cost nothing. There is no
-refund path anywhere in the product because there is nothing to refund.
+provider failure, a validation error and a timeout all cost nothing. A failed
+generation has no refund path because there is nothing to refund.
 
 Two consequences for your error handling:
 

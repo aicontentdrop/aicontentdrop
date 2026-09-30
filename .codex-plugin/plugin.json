@@ -1,0 +1,52 @@
+{
+  "name": "aicontentdrop",
+  "version": "0.2.0",
+  "description": "Make AI videos, images, finished ads and short dramas from a description, across multiple leading models. Browse the catalogue and cost estimates with no credential; generate with an API key or an OAuth sign-in.",
+  "author": {
+    "name": "AI Content Drop",
+    "email": "support@aicontentdrop.com",
+    "url": "https://aicontentdrop.com"
+  },
+  "homepage": "https://aicontentdrop.com/developers",
+  "repository": "https://github.com/aicontentdrop/aicontentdrop",
+  "license": "MIT",
+  "keywords": [
+    "ai-video",
+    "video-generation",
+    "image-generation",
+    "mcp",
+    "agent"
+  ],
+  "skills": "./skills",
+  "interface": {
+    "displayName": "AI Content Drop",
+    "shortDescription": "Make AI videos, images, ads and short dramas",
+    "longDescription": "Describe the video, image, ad or short drama you want. AI Content Drop picks a suitable model from multiple leading image and video engines, tells you the cost before anything runs, generates it, and returns the result here. It can also cut a finished, captioned ad from a brief, lay out a campaign on a board, research the ads competitors run, and write and produce a short vertical drama. Sign in with OAuth or an API key to generate; browsing models and cost estimates needs no account.",
+    "developerName": "AI Content Drop",
+    "category": "creative",
+    "capabilities": [
+      "Make a video ad or product video from a written description",
+      "Turn a product photo or still image into a short video clip",
+      "Animate an existing image",
+      "Make a thumbnail, poster, product still or concept image",
+      "Pick a suitable AI video or image model for the job and see the cost before anything runs",
+      "Turn a brief or script into a prompt the model will follow",
+      "Plan a storyboard or shot list and price the whole run first",
+      "Explain what a generation costs and whether it fits a credit balance",
+      "Make a finished, captioned video ad or UGC-style clip from a brief",
+      "Plan a campaign on a visual board and render its cards one approval at a time",
+      "Research the ads competitors run and decode a winner into a reusable brief",
+      "Write a short vertical drama and render and cut its episodes",
+      "Hand a whole campaign to the video agent on accounts that have it"
+    ],
+    "websiteURL": "https://aicontentdrop.com",
+    "privacyPolicyURL": "https://aicontentdrop.com/privacy-policy",
+    "termsOfServiceURL": "https://aicontentdrop.com/terms-of-use",
+    "defaultPrompt": [
+      "Make a 5-second vertical video of a matcha latte being poured, product-ad style",
+      "Turn this product photo into a short cinematic clip",
+      "Which AI video model should I use for a 20-shot storyboard, and what will it cost?"
+    ],
+    "brandColor": "#3d4fff"
+  }
+}
