@@ -1,6 +1,6 @@
 ---
 name: video-agent
-description: Hand a whole piece of video work to Drop, the AI Content Drop video agent, from another agent. One brief is carried through research, concepts, a storyboard, renders and assembly, and every step that charges credits stops for an approval. Covers start_drop, ask_drop, get_drop, approve_drop_spend and list_drops, relaying the drop's clarifying questions, following a turn that outlives the call, approving the exact quote, and what to do on accounts where the drop tools are not listed. Use when asked for a campaign, several videos from one brief, an ad built from competitor research, or "just make the whole thing".
+description: Hand a whole piece of video work to Drop, the AI Content Drop video agent, from another agent. One brief is carried through research, concepts, a storyboard, renders and assembly, and every step that charges credits stops for an approval. Covers start_drop, ask_drop, get_drop, approve_drop_spend and list_drops, relaying the drop's clarifying questions, following a turn that outlives the call, approving the exact quote, and what to do before the person has signed in. Use when asked for a campaign, several videos from one brief, an ad built from competitor research, or "just make the whole thing".
 license: MIT
 metadata:
   homepage: https://aicontentdrop.com/docs/mcp
@@ -21,9 +21,10 @@ and `list_drops`. Only `approve_drop_spend` can make a drop charge credits.
 
 ## 1. Check that the drop is here
 
-The drop tools appear on `tools/list` only for accounts that can use them; the
-agent is opening to accounts in stages. When they are not listed, say so in one
-sentence and do the job with the precise tools instead:
+The drop tools appear on `tools/list` for every signed-in account; a caller
+without a sign-in does not see them. When they are not listed, let the host
+sign the person in. If that is not possible, say so in one sentence and do the
+job with the precise tools instead:
 
 | The request | Without the drop |
 | --- | --- |

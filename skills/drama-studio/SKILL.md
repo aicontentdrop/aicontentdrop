@@ -1,6 +1,6 @@
 ---
 name: drama-studio
-description: Make a short vertical drama with AI Content Drop's Drama Studio from an agent, from a premise to a finished, cut episode. Covers start_drama, get_drama, list_dramas, revise_drama, review_drama_draft, quote_drama_episode, produce_drama_episode and assemble_drama_episode; following a draft that takes minutes; reading the script back before anything renders; showing the episode total before rendering; and handing over the Drama Studio page on accounts where the drama tools are not listed. Use when asked for a short drama, a mini-series, a vertical episode, a soap-style story, or a scripted series of clips with recurring characters.
+description: Make a short vertical drama with AI Content Drop's Drama Studio from an agent, from a premise to a finished, cut episode. Covers start_drama, get_drama, list_dramas, revise_drama, review_drama_draft, quote_drama_episode, produce_drama_episode and assemble_drama_episode; following a draft that takes minutes; reading the script back before anything renders; showing the episode total before rendering; and handing over the Drama Studio page when the drama tools are not listed. Use when asked for a short drama, a mini-series, a vertical episode, a soap-style story, or a scripted series of clips with recurring characters.
 license: MIT
 metadata:
   homepage: https://aicontentdrop.com/generate/drama
@@ -17,9 +17,10 @@ one vertical video. A drama an agent starts and one the person starts at
 
 ## 1. Check that the tools are here
 
-The eight drama tools appear on `tools/list` only for signed-in accounts that
-can use them; they are opening in stages. When they are not listed, say so and
-hand over the Drama Studio page instead, with the premise you worked out (skill
+The eight drama tools appear on `tools/list` for every signed-in account; a
+caller without a sign-in does not see them. When they are not listed, let the
+host sign the person in, or hand over the Drama Studio page with the premise
+you worked out (skill
 `short-drama-writer` covers writing one). Do not assemble a drama out of
 `generate_video` calls: the characters would not stay the same between clips.
 

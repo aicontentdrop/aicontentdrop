@@ -1,6 +1,6 @@
 ---
 name: muse-connector
-description: Drive AI Content Drop from a host that writes its own client against the MCP server rather than reading a config file. Covers which tool answers which question, quoting with estimate_credit_cost before any generation, submitting and polling instead of waiting inside a tool call, the drop tools for accounts that have them, and repeating refusal codes verbatim. Use when connecting AI Content Drop to a consumer agent as a custom integration, when a saved integration needs to be re-taught the call order, or when a generation call times out, is refused, or is about to be retried.
+description: Drive AI Content Drop from a host that writes its own client against the MCP server rather than reading a config file. Covers which tool answers which question, quoting with estimate_credit_cost before any generation, submitting and polling instead of waiting inside a tool call, the drop and drama tools, and repeating refusal codes verbatim. Use when connecting AI Content Drop to a consumer agent as a custom integration, when a saved integration needs to be re-taught the call order, or when a generation call times out, is refused, or is about to be retried.
 license: MIT
 metadata:
   homepage: https://aicontentdrop.com/docs/install/muse
@@ -79,12 +79,12 @@ the person can open one page and see every step as connected cards:
    10 seconds until each one is done.
 4. Hand the person the page from `get_canvas_link`.
 
-## Drops, on accounts that have them
+## Drops
 
-The drop tools appear in `tools/list` only for accounts that can use them. When
-they are listed and the person asks for a whole campaign, or several videos
-from one brief, offer a drop: it hands over the whole piece of work rather than
-sequencing it yourself:
+The drop tools appear in `tools/list` for every signed-in account. When the
+person asks for a whole campaign, or several videos from one brief, offer a
+drop: it hands over the whole piece of work rather than sequencing it
+yourself:
 
 1. `start_drop` with the goal in a sentence. It opens the drop and costs
    nothing; planning has not started yet.

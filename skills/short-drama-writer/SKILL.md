@@ -44,8 +44,8 @@ If the premise fails a test, say which one and offer two sharper versions.
 | 60 s | 6 to 9 | 2 to 3 |
 | 90 s | 8 to 12 | 3 to 4 |
 
-A beat is one distinct action of 4 to 15 seconds. Up to 12 episodes make a
-season; plan the season question first, then let each episode answer a smaller
+A beat is one distinct action of 4 to 15 seconds. A season in Drama Studio
+can run to 60 episodes; plan the season question first, then let each episode answer a smaller
 one and raise the next.
 
 ## 3. The rules every episode follows
