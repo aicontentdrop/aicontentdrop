@@ -86,21 +86,21 @@ person asks for a whole campaign, or several videos from one brief, offer a
 drop: it hands over the whole piece of work rather than sequencing it
 yourself:
 
-1. `start_drop` with the goal in a sentence. It opens the drop and costs
+1. `start_video_agent` with the goal in a sentence. It opens the drop and costs
    nothing; planning has not started yet.
-2. `ask_drop` with the brief. The drop may ask a few clarifying questions:
-   relay them and answer with `ask_drop`. If a turn is still running when the
-   call returns, it says so — do not resend; the reply arrives on `get_drop`.
-3. `get_drop` to poll. It reports the phase, the drop's latest reply,
+2. `message_video_agent` with the brief. The drop may ask a few clarifying questions:
+   relay them and answer with `message_video_agent`. If a turn is still running when the
+   call returns, it says so — do not resend; the reply arrives on `get_video_agent_run`.
+3. `get_video_agent_run` to poll. It reports the phase, the drop's latest reply,
    everything made so far, and `pending_approval` when a step would charge
    credits.
-4. `approve_drop_spend` with the `run_id`, `task_id` and the **exact**
+4. `approve_video_agent_spend` with the `run_id`, `task_id` and the **exact**
    `quote_id` from `pending_approval`. This is the only call that releases a
    spend, and a second approval of the same quote is refused, never a second
    charge.
 
 If a decision sits unanswered long enough for the price to lapse, read
-`get_drop` again for the current `pending_approval` and approve that one. Never
+`get_video_agent_run` again for the current `pending_approval` and approve that one. Never
 guess a `quote_id` or reuse one from an earlier step.
 
 ## Refusals are typed — repeat them
@@ -127,7 +127,7 @@ is no refund to ask for and no cleanup to do.
 
 Hosts that let a person hold individual actions for approval should hold
 exactly the ones that can spend: `generate_video`, `generate_image`,
-`run_generation_card` and `approve_drop_spend`. Everything else costs nothing,
+`run_generation_card` and `approve_video_agent_spend`. Everything else costs nothing,
 so a read-only policy on the reads loses no capability. Ask once per task how
 spending should be approved, then follow that answer for the whole task instead
 of asking again per call.
