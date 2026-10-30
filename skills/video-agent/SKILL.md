@@ -1,6 +1,6 @@
 ---
 name: video-agent
-description: Hand a whole piece of video work to Drop, the AI Content Drop video agent, from another agent. One brief is carried through research, concepts, a storyboard, renders and assembly, and every step that charges credits stops for an approval. Covers start_video_agent, message_video_agent, get_video_agent_run, approve_video_agent_spend and list_video_agent_runs, relaying the drop's clarifying questions, following a turn that outlives the call, approving the exact quote, and what to do before the person has signed in. Use when asked for a campaign, several videos from one brief, an ad built from competitor research, or "just make the whole thing".
+description: Hand a whole piece of video work to Drop, the AI Content Drop video agent, from another agent. One brief is carried through research, concepts, a storyboard, renders and assembly, and every step that charges credits stops for an approval. Covers start_video_agent, message_video_agent, get_video_agent_run, approve_video_agent_spend and list_video_agent_runs, starting from a reference clip or image that was read into words first, relaying the drop's clarifying questions, following a turn that outlives the call, reading each piece's score and the Director's notes, approving the exact quote, and what to do before the person has signed in. Use when asked for a campaign, several videos from one brief, an ad built from competitor research, something "in the style of this clip", or "just make the whole thing".
 license: MIT
 metadata:
   homepage: https://aicontentdrop.com/docs/mcp
@@ -56,6 +56,30 @@ an ad modelled on what competitors run, or when they want the whole job handled.
 The drop may answer with questions before it plans. Relay them to the person as
 they are and send the answers with `message_video_agent`. Do not answer for the person.
 
+### Starting from a reference
+
+When the person shows a clip or a still to copy rather than describing the
+result, read it into words first and start the drop from those words. The full
+walk is the `recreate-reference` skill; the short form:
+
+1. Ask who holds the rights (`own_work`, `licensed` or `permission`) and pass
+   the answer as given, as `rights_basis` (CLI: `--rights`). Never choose a
+   basis for the person. There is no default: a video read without
+   `rights_basis` is refused (`rights_required`), and the answer is to ask.
+2. `analyze_reference` with the `url` of the clip or still (a public `https`
+   link) and the `rights_basis` (CLI: `acd analyze <file|url> --rights
+   <basis>`). Free, capped per day, words only: the `reference_class` with its
+   confidence, a summary, the shots, cast, look and lines. Show the person
+   what it saw; let them correct the class.
+3. `start_video_agent` with the goal, `reference_url` exactly as the read
+   returned it, and `reference_class` when the person confirmed or corrected
+   it (CLI: `acd drop "<goal>" --reference <file|url>`). Starting charges
+   nothing.
+
+When the reference tools are not listed, or the read answers
+`vision_unavailable`, say so in one sentence and run the drop from a written
+brief instead of describing the reference yourself.
+
 ## 4. Follow a turn that outlives the call
 
 `message_video_agent` returns within about 40 seconds. When a turn runs longer, the call
@@ -70,6 +94,28 @@ instead; its `answer` carries the reply once it lands.
 `credits_spent`, the drop's own narration in `trace`, and `pending_approval`.
 Report a change of phase or a finished artifact, not every poll. Stop after 15
 minutes of no change and hand over the board link.
+
+### Reading the scorecard
+
+Once the drop has made pieces, `get_video_agent_run` carries the scorecard:
+
+- `pieces`: one entry per made piece with its `score` (0–100), `verdict` and
+  `reasons`, and a `retry_offer` while another take the director suggested
+  waits for a yes (section 5).
+- `director_notes`: the Director's notes for the whole run, each naming the
+  direction rule (`skill`) and why it fired (`why`).
+- `reference_class_label`: for a drop started from a reference, its class in
+  plain words.
+
+The verdicts: `accept` (stands as made), `retry` or `switch` (the director
+suggests another take, with a changed prompt or on another model; that take is
+a new paid step made only after the person approves it, and arrives as a new
+piece), `accepted_with_notes` (it stands and nothing waits on it; the director
+may suggest another take, made only if the person approves it), `unscored` (not
+judged; its score is not a grade). The CLI prints all of this with `acd drop status <run_id> --notes`.
+
+Hand the score to the person with its reasons. It is the drop's opinion in
+words, never a reason to approve anything on their behalf.
 
 ## 5. Approve the exact step, with the number
 
@@ -97,6 +143,18 @@ What the drop makes depends on the brief. A product ad is cut from two or three
 shots (10 or 15 seconds); a single take is one clip priced as one clip; research,
 concepts, storyboards and the board cost nothing. Each rendered step shows its
 own quote.
+
+A **retry offer** is the same gate on another take the director suggested for
+a piece (the surfaces call it "Try the other model"): the piece's `retry_offer`
+carries the `task_id`, `quote_id` and `credits` of that step, and while it is
+the next decision it is also `pending_approval`. Read the number from the
+offer, ask the person with it, and only after their yes approve it with
+`approve_video_agent_spend` and the `task_id` and `quote_id` exactly as given
+(CLI: `acd drop retry <run_id> <piece_id> --quote <quote_id>` with the
+`quote_id` the person saw; without `--quote` the command refuses and sends
+nothing, and when the retry was priced again since, it approves nothing and
+prints the new quote and credits to put to the person). One offer per piece; a declined offer
+leaves the piece as it was, with its score.
 
 ## 6. Pick up an earlier drop
 

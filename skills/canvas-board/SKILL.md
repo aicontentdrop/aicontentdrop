@@ -14,10 +14,13 @@ A board is the Visual Canvas on AI Content Drop: cards on an infinite surface,
 shared between the person's browser and every agent on the account. The board
 tools are `list_canvases`, `create_canvas`, `get_canvas`, `rename_canvas`,
 `get_canvas_link`, `add_text_card`, `add_media_card`, `add_frame`,
-`add_generation_card`, `connect_cards`, `update_card`, `move_cards`,
-`arrange_cards`, `group_cards`, `run_generation_card` and `refresh_canvas`. They appear on
-`tools/list` where the board surface is enabled and every one of them needs a
-sign-in, because a board is account data. If they are absent, say so and stop.
+`add_generation_card`, `connect_cards`, `update_card`, `run_generation_card`
+and `refresh_canvas`. They appear on `tools/list` where the board surface is
+enabled and every one of them needs a sign-in, because a board is account
+data. If they are absent, say so and stop. Three more tools, `move_cards`,
+`arrange_cards` and `group_cards`, are marked for the board view only
+(`_meta.ui.visibility: ["app"]`): a host that honours that never shows them
+to you, so do not look for them or call them.
 
 Exactly one of them spends credits: `run_generation_card`. Everything else
 costs nothing, however many cards you add.
@@ -41,10 +44,11 @@ Cards come in four kinds you can add:
 | `add_frame` | frame | A labelled region such as Week 1 or Hooks |
 
 Omit `position`. The server places every new card on a grid and repairs
-overlap; a model that moves cards by hand spends turns on pixels. `group_cards`
-wraps related cards in a labelled frame, which is the one layout call worth
-making. `move_cards` and `arrange_cards` exist for the board view's drag and
-multi-select, not for you.
+overlap; a model that moves cards by hand spends turns on pixels. A frame is a
+card of its own and encloses nothing by itself: to put cards under a label,
+add the frame and name the label in each card's title, and leave the grouping
+to the person on the board page, where the board view moves, arranges and
+groups cards through the tools only it can see.
 
 Every mutating tool returns the whole board. Read the next step from that
 answer, not from what you remember adding.
@@ -76,25 +80,27 @@ from the board it was handed.
 ## 4. Quote, then ask once, then run
 
 A generation card renders through `run_generation_card`, which requires a
-`quote_id`. Get it from `estimate_credit_cost` with the card's `model`, its
-`kind` (`video` or `image`) and `quantity: 1`; the quote is valid for 15
-minutes and returns `credits_total`. Pass the card's `duration` and
+`quote_id`. Get it from `estimate_credit_cost` with `model_id` set to the
+card's `model` and `quantity: 1` (the tool reads the kind from the model);
+the quote is valid for 15 minutes and returns `credits_total`. Pass the card's `duration` and
 `resolution` too whenever the card has them: models that price by the second
 are priced from those, and the run verifies the quote against the card, so a
 quote taken without them is refused as `QUOTE_MISMATCH` and costs a turn.
 
-Before the first render of a task, ask the paid-approval question once, in
-words, with the number in it:
+Before the first render of a task, quote every card, then ask the
+paid-approval question once, in words, with each card's number and the total
+in it:
 
-> Rendering this card will use 24 credits. Shall I run it, and for the other
-> cards on this board: confirm each one, or run them without asking?
+> Rendering this card will use 24 credits; the other three cards are 24, 24
+> and 12, 84 in all. Shall I run it, and for the other cards on this board:
+> confirm each one, or run them without asking?
 
 The answer is one of two modes for the rest of the task:
 
 | Mode | When it applies | What you do |
 | --- | --- | --- |
 | `confirm_each` | The default, and whenever the answer is unclear | Quote, state the credits and ask before every `run_generation_card` |
-| `autonomous` | Only after the person has said clearly that the whole task may proceed without further questions | Quote each card, run without asking, and report every charge afterwards |
+| `autonomous` | Only after every card has been quoted and each card's number and the total said in words, and the person has said clearly, to that total, that the whole task may proceed without further questions | Run those quoted cards without asking again and report every charge afterwards; a card added or re-quoted after that yes is asked about on its own |
 
 Ask once per task, not once per card and not once per session. An ambiguous
 answer is `confirm_each`.
@@ -124,7 +130,7 @@ never run a card a second time because the first run is slow.
 | `INVALID_ARGUMENT` naming `CANVAS_FULL` | The board holds its maximum of 200 cards | Start another board with `create_canvas`, or ask the person to remove cards on the website |
 | `INVALID_ARGUMENT` with `details.reason: "SOURCE_NOT_READY"` | The card starts from `details.source_card_id`, which has no finished image yet | Run that card first, `refresh_canvas` until it is `done`, then run this one. Nothing was charged |
 | `INVALID_ARGUMENT` with `details.reason: "EDGE_EXISTS"` | Those two cards are already connected | Nothing changed; carry on |
-| `QUOTE_REQUIRED` / `QUOTE_EXPIRED` / `QUOTE_MISMATCH` | No quote, an old quote, or a quote for a different model, kind, duration or resolution | `estimate_credit_cost` again for this card's `model`, `kind`, `duration` and `resolution`, then run with the new `quote_id` |
+| `QUOTE_REQUIRED` / `QUOTE_EXPIRED` / `QUOTE_MISMATCH` | No quote, an old quote, or a quote for a different model, kind, duration or resolution | `estimate_credit_cost` again with `model_id` set to this card's `model`, and its `duration` and `resolution`, then run with the new `quote_id` |
 | `NOT_FOUND` | No such board or card on this account | `list_canvases` for board ids, `get_canvas` for card ids |
 | `INSUFFICIENT_CREDITS` | The balance is below the quoted amount | Tell the person the number; nothing was charged |
 | `ENTITLEMENT_REQUIRED` | The account cannot generate on its current plan | Say so and give the `info_url` the refusal carries (`https://aicontentdrop.com/plans`); nothing else about plans |

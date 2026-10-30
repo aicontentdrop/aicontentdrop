@@ -103,6 +103,37 @@ If a decision sits unanswered long enough for the price to lapse, read
 `get_video_agent_run` again for the current `pending_approval` and approve that one. Never
 guess a `quote_id` or reuse one from an earlier step.
 
+## From a reference
+
+When the person shows a clip or an image and wants something made in its
+manner, read it into words before the drop starts:
+
+1. Ask who holds its rights, then call `analyze_reference` with `url` (a public
+   `https` link) and `rights_basis`: `own_work`, `licensed` or `permission`,
+   exactly as the person answered. Never choose the basis for them. The read is
+   free and read-only, with a daily cap, and the answer is words only:
+   `reference_url`, the `reference_class` with its `confidence`, and the
+   `facts` (summary, shots, cast, look, lines). Relay the summary as what the
+   agent saw.
+2. `start_video_agent` with the goal, `reference_url` exactly as the read
+   returned it, and `reference_class` when the person corrected the class. A
+   read still `analyzing` is fine: the run finishes it. Do not read the same
+   clip twice.
+3. `get_video_agent_run` as above. Each made piece in `pieces` carries a
+   `score` (0 to 100), a `verdict` and its `reasons`, and the run's
+   `director_notes` name each direction rule the agent applied (`skill`) and
+   why (`why`). Hand the score over with its reasons, as the agent's opinion.
+4. When the director suggests another take of a piece and it waits for a
+   yes, the piece carries a `retry_offer` with its own `task_id`, `quote_id`
+   and `credits`. Tell the person that number, and call
+   `approve_video_agent_spend` with exactly those ids only after they say yes.
+   A declined offer leaves the piece as it was.
+
+`vision_unavailable` means the reference read is not open for this account:
+say so and run a plain drop from a written brief. `analysis_cap` carries
+`reset_at`; do not retry before then. `reference_storage_unavailable` is
+temporary, and nothing was read or charged.
+
 ## Refusals are typed — repeat them
 
 Every failure carries a stable `code`, a `message`, a `next_step` and

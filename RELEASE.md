@@ -5,12 +5,39 @@ Version `0.1.0` is already public at
 release. Publishing remains an account-owner action because npm login and 2FA
 must not be delegated to an unattended agent.
 
+## 0.3.0 — the video agent from a reference
+
+What this version adds, so the owner can check the tarball against it:
+
+- CLI: `acd analyze <file|url> [--rights own_work|licensed|permission]`
+  (`POST /v1/engine/analyze`; prints the class, confidence, summary, shots,
+  cast, look and lines — words only), `acd drop "<goal>" [--reference
+  <file|url>] [--lane auto|marketing|cinematic|ugc|drama] [--budget N]
+  [--confirm-each]`, `acd drop status <run_id> [--notes]` (each piece's score
+  and verdict, the Director's notes, every retry offer) and `acd drop retry
+  <run_id> <piece_id> --quote <quote_id>` (refuses and sends nothing without
+  `--quote`, or with `--accept-quote` alone; approves nothing and prints the
+  current quote and credits when the retry was priced again since).
+- SDK: `analyzeReference`, `analyzeReferenceAndWait`, `getReference`,
+  `startDrop`, `getDrop`, `listDrops`, `approveDrop`, and the pure helpers
+  `retryOffersOf` / `findRetryOffer`.
+- Skills: new `recreate-reference`; `video-agent` gains the reference flow
+  and the scorecard read; `skills/README.md` lists fourteen.
+- No new runtime dependency. The CLI prints no engine name behind a step and
+  no plan price; a retry is approved only at the quote the person saw.
+
+Server side: the reference read and the scorecard are served by the engine
+behind its own flags. Publish the package when those routes answer on
+production; before that the new commands return the API's own refusal
+(`vision_unavailable`), which the skills tell an agent how to read.
+
 ## Before publishing
 
 Work from the package directory, never from the repository root:
 
 ```bash
 cd packages/cli
+npm ci
 npm run build
 npm pack --dry-run
 ```
@@ -30,7 +57,9 @@ Before a new release, bump the same version in all four package descriptors:
 plugin manifests to the identical value before packing. Then inspect the dry
 run instead of relying on a remembered file count. The `files` allowlist should
 contain only `dist/`, package documentation, `skills/`, the plugin/MCP
-manifests, and `LICENSE`.
+manifests, and `LICENSE`. For 0.3.0 the dry run must list
+`skills/recreate-reference/SKILL.md` and `dist/cli.js` whose `--help` shows
+`analyze` and `drop`.
 
 ## Publish
 
@@ -49,6 +78,7 @@ flag is required. `prepublishOnly` rebuilds `dist/` immediately before upload.
 npm view aicontentdrop version homepage repository.url
 npx aicontentdrop@latest models --type video --max-credits 15
 npx aicontentdrop@latest open-api
+npx aicontentdrop@latest --help
 ```
 
 The read commands must work on a clean machine with no API key and no prior
@@ -58,8 +88,9 @@ how an agent distinguishes the official SDK from a similarly named package.
 
 ## Skills discovery
 
-The public repository mirrors its six product skills under the root `skills/`
-directory. Verify that exact public source without installing anything:
+The public repository mirrors its fourteen product skills under the root
+`skills/` directory. Verify that exact public source without installing
+anything:
 
 ```bash
 npx skills add aicontentdrop/aicontentdrop/skills --list
@@ -72,9 +103,10 @@ will improve only as actual users install the skills.
 
 ## After publishing
 
-1. Push the release commit and tag to the public source repository.
-2. Confirm the npm tarball contains all six `SKILL.md` files and the package
-   manifests, but no application source, secrets, or local paths.
+1. Push the release commit and tag to the public source repository, and mirror
+   the new `recreate-reference` skill into its root `skills/` directory.
+2. Confirm the npm tarball contains all fourteen `SKILL.md` files and the
+   package manifests, but no application source, secrets, or local paths.
 3. If the package name or install command changes, update `/llms.txt`, the
    developer portal, agent onboarding, and `?mode=agent` in the same release.
 4. Redeploy the website only when those public discovery surfaces changed.

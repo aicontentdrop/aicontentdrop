@@ -60,6 +60,30 @@ Every command prints JSON by default so scripts and agents can parse it; add
 `--pretty` for humans. Failures print JSON to stderr and exit non-zero (`2`
 failure, `3` rate limited).
 
+### The video agent, from a reference
+
+```bash
+acd analyze ./reference.mp4 --rights own_work     # read a clip or image into words (free, capped)
+acd drop "a 15-second vertical ad in this style" \
+  --reference ./reference.mp4 --rights own_work \
+  --lane auto --confirm-each                      # read it, start the run, print what it saw
+acd drop "three product videos for Nimbus Tea"    # a plain run from a written goal
+acd drop status <run_id> --notes                  # phase, credits, each piece's score and verdict, retry offers
+acd drop retry <run_id> <piece_id> --quote <quote_id> # approve that retry at the quote shown
+```
+
+| Command | What it does |
+| --- | --- |
+| `analyze <file\|url> [--rights own_work\|licensed\|permission]` | `POST /v1/engine/analyze`. Prints the class with its confidence, the summary, the shots (index, size, camera, action, tags), cast, look and lines. Words only; no frame comes back. A video needs `--rights`. |
+| `drop "<goal>" [--reference <file\|url>] [--lane auto\|marketing\|cinematic\|ugc\|drama] [--budget N] [--confirm-each]` | With a reference: reads it, then `POST /v1/engine/chat` with the reference on the brief. Without: `POST /v1/engine/runs`. Prints the `run_id` and what it saw. Starting charges nothing. |
+| `drop status <run_id> [--notes]` | `GET /v1/engine/runs/:id`. Phase, status, credits, each piece with its `score` and `verdict`; `--notes` adds the reasons and the Director's notes. Lists every retry offer with `task_id`, `quote_id` and `credits`. |
+| `drop retry <run_id> <piece_id> --quote <quote_id>` | Finds the priced retry waiting on that piece and approves it through `POST /v1/engine/runs/:id/approve`, only when its current `quote_id` is the one given (the one `drop status` showed the person). Without `--quote` it sends nothing and refuses (`--accept-quote` alone names no price and is refused too); when the retry was priced again it approves nothing, exits 2 and prints the current `quote_id` and credits (`quote_mismatch`). |
+
+The SDK maps the same routes: `analyzeReference`, `analyzeReferenceAndWait`,
+`getReference`, `startDrop`, `getDrop`, `listDrops`, `approveDrop`, plus the
+pure helpers `retryOffersOf` and `findRetryOffer` that read a run for its
+retry offers.
+
 Rehearse anything that would cost credits:
 
 ```bash
@@ -129,7 +153,7 @@ to `createBillingCheckout`. Neither the SDK nor the CLI opens the returned URL.
 
 ## Install the agent skills
 
-The public repository mirrors thirteen focused skills in its root `skills/`
+The public repository mirrors fourteen focused skills in its root `skills/`
 directory. Use that directory as the source so discovery selects the product
 collection directly:
 
@@ -153,6 +177,7 @@ npx skills add aicontentdrop/aicontentdrop/skills \
   --skill canvas-board \
   --skill competitor-ad-research \
   --skill video-agent \
+  --skill recreate-reference \
   --skill drama-studio \
   --skill short-drama-writer \
   --skill muse-connector
@@ -161,8 +186,9 @@ npx skills add aicontentdrop/aicontentdrop/skills \
 Each skill is independently installable and has a narrow trigger: model
 selection and quoting, video prompting, image generation, batch execution,
 error recovery, credits and plans, finished ads, boards, competitor research,
-the video agent, short dramas, and hosts that build their own client. See the
-[skills catalogue](./skills/README.md) for the capability map.
+the video agent, recreating a reference, short dramas, and hosts that build
+their own client. See the [skills catalogue](./skills/README.md) for the
+capability map.
 
 ## For AI agents
 
@@ -173,7 +199,7 @@ the video agent, short dramas, and hosts that build their own client. See the
 - OpenAPI 3.1: [`/openapi.json`](https://aicontentdrop.com/openapi.json)
 - Skills: [`skills/`](./skills) — model selection, prompt writing, batch runs,
   error handling, credits, image generation, finished ads, boards, competitor
-  research, the video agent and short dramas. Also served per skill at
+  research, the video agent, recreating a reference and short dramas. Also served per skill at
   `https://aicontentdrop.com/skills/<name>/SKILL.md`, indexed at
   [`/skills/index.json`](https://aicontentdrop.com/skills/index.json)
 - Agent plugin: [`plugin.json`](./plugin.json) + [`mcp.json`](./mcp.json)

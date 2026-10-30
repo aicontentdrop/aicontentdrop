@@ -44,9 +44,12 @@ the platform. Anything else — a Dropbox link, a CDN, the person's own site —
 goes through `import_asset` first, which copies a public `https:` image (JPEG,
 PNG or WebP, up to 10 MB) and returns the URL to pass on.
 
-No product image? Set `needs_product_gen`. No avatar? Either set
-`needs_avatar_gen` or make one with `generate_avatar`; both add to the quote,
-so neither happens silently.
+`generate_ad` refuses without both URLs. No product image? Make one first (a
+quoted `generate_image`, under the money rule) or import one. No avatar? Pick
+one from `list_ugc_avatars` or make one with a quoted `generate_avatar`. Pass
+the resulting URLs, and set `needs_product_gen` / `needs_avatar_gen` only for
+a reference generated in this run, so the quote carries that line and neither
+happens silently.
 
 ## 3. Storyboard before money
 

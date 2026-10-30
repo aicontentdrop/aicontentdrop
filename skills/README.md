@@ -1,6 +1,6 @@
 # AI Content Drop agent skills
 
-Thirteen focused, MIT-licensed skills teach agents how to use the AI Content Drop
+Fourteen focused, MIT-licensed skills teach agents how to use the AI Content Drop
 API safely and economically. They are source-controlled with the official
 [TypeScript SDK and CLI](https://www.npmjs.com/package/aicontentdrop), and each
 one remains independently installable.
@@ -8,7 +8,7 @@ one remains independently installable.
 ## Install
 
 Point the skills CLI at the public repository's root `skills/` directory, where
-the thirteen product skills are mirrored for direct discovery:
+the fourteen product skills are mirrored for direct discovery:
 
 ```bash
 # Inspect the available skills first
@@ -19,7 +19,7 @@ npx skills add aicontentdrop/aicontentdrop/skills \
   --skill ai-video-model-picker
 ```
 
-To install the complete collection, name all thirteen explicitly:
+To install the complete collection, name all fourteen explicitly:
 
 ```bash
 npx skills add aicontentdrop/aicontentdrop/skills \
@@ -33,6 +33,7 @@ npx skills add aicontentdrop/aicontentdrop/skills \
   --skill canvas-board \
   --skill competitor-ad-research \
   --skill video-agent \
+  --skill recreate-reference \
   --skill drama-studio \
   --skill short-drama-writer \
   --skill muse-connector
@@ -52,6 +53,7 @@ npx skills add aicontentdrop/aicontentdrop/skills \
 | `canvas-board` | Plan on a board: lay out text, media and generation cards, quote and approve each render, hand over the board link. |
 | `competitor-ad-research` | Search the ads competitors run, keep the ones worth studying, decode a winner into a brief, and put it on a board. |
 | `video-agent` | Hand a whole campaign to Drop, the video agent: brief, clarifying questions, approve each paid step by its exact quote. |
+| `recreate-reference` | Make a video in the manner of a reference clip or image: the rights question, the read into words, the run from the brief, the scorecard, the priced retry. |
 | `drama-studio` | Write, accept, price, render and cut a short vertical drama through the drama tools. |
 | `short-drama-writer` | Write a short drama as text: premise tests, hooks, power moves, a shot per beat, an ending that demands the next episode. |
 | `muse-connector` | Drive the MCP server from a host that builds its own client: call order, quoting, polling, and refusal codes. |
